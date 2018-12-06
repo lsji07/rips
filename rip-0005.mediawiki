@@ -14,4 +14,8 @@
 Add messaging as outlined in roadmap.
 https://github.com/RavenProject/Ravencoin/tree/master/roadmap
 
-Activate at a specific block number - TBD.
+Spec:
+https://medium.com/@tronblack/ravencoin-kaaawww-2f72077aece
+
+Activate using BIP9.
+
