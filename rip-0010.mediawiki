@@ -1,0 +1,42 @@
+<pre>
+RIP: 10
+Title: Address Metadata Tags
+Authors: The Mango Farm Team
+Comments-Summary: No comments yet
+Comments-URI: https://github.com/RavenProject/rips
+Status: Draft
+Type: Process
+Created: 2019-06-01
+</pre>
+
+==Abstract==
+
+This RIP proposes a system to "tag" Ravencoin addresses with unique assets issued with a specific naming convention.  These unique assets can carry metadata that adds additional functionality at the wallet level.  Applications of this system include:
+
+*[[rip-0011.mediawiki|RIP11 - Asset Metadata Encryption Protocol]]
+*[[rip-0012.mediawiki|RIP12 - Address Name Tags]]
+*[[rip-0013.mediawiki|RIP13 - Address Identity Tags]]
+
+==Motivation==
+
+Address Metadata Tags are unique assets that are associated with Ravencoin addresses.  They can be used to facilitate enhanced wallet-level functionality, including metadata encryption and the association of Ravencoin addresses with "real world" names or pseudonyms that are stored on the Ravencoin blockchain itself.  A standardized methodology for building Address Metadata Tags will allow this functionality to be used on a wallet-agnostic basis.
+
+==Methodology==
+
+We propose the following methodology to build Address Metadata Tags:
+
+#Generate a new Ravencoin address (or use an existing one).
+#Create an IPFS file with information relevant to the tag, such as the PGP public key for an Encryption Address Metadata Tag under [[rip-0011.mediawiki|RIP11]], an Address Name Tag under [[rip-0012.mediawiki|RIP12]], or an Address Identity Tag under [[rip-0013.mediawiki|RIP13]] and add the file to IPFS to obtain a hash.
+#"Tag" the Ravencoin address by issuing and sending a unique asset to the address, adding the IPFS hash from step 2 as the asset metadata and using the following naming convention (excluding the brackets): <code>MAIN_ASSET#TAG_[address_hash]</code>
+
+::: “MAIN_ASSET” can be any main asset name no more than 10 characters in length, for a total asset name length of up to 23 characters (the remaining 7 characters are reserved for potential future functionality).  Users, wallet providers and other second layer solutions may choose to use a single main asset name for all Address Metadata Tags they or their platforms generate.  This reduces the cost of generating each Address Metadata Tag to the 5 RVN burn fee.
+
+::: “TAG” is a three-letter identifyer signifying the Address Metadata Tag being used.  For example: (1) "PGP" is used in [[rip-0011.mediawiki|RIP11]] to indicate that the the unique asset carries a PGP public key for receiving encrypted metadata; (2) “ANT” is used in [[rip-0012.mediawiki|RIP12]] to specify an Address Name Tag for the address; and (3) “AIT” is used in [[rip-0013.mediawiki|RIP13]] to specify an Address Identity Tag for the address.  Additional applications can use any number of tags for this purpose.
+
+::: “address_hash” is the CRC32 hash of the Ravencoin address.  Using this hash in the unique asset name acts as a checksum, allowing any sender to confirm that the encryption receiving asset matches the Ravencoin address that holds it.  For this purpose, the hash need not be cryptographically secure.  CRC32 was selected due to its simplicity and short length (8 characters).
+
+
+==References==
+* [[rip-0011.mediawiki|RIP11 - Asset Metadata Encryption Protocol]].
+* [[rip-0012.mediawiki|RIP12 - Address Name Tags]].
+* [[rip-0013.mediawiki|RIP13 - Address Identity Tags]].

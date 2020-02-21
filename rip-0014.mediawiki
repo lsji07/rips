@@ -1,0 +1,122 @@
+<pre>
+RIP: 14
+Title: RIP14 Metadata Specification
+Authors: The Mango Farm Team
+Comments-Summary: comments incorporated
+Comments-URI: https://github.com/RavenProject/rips
+Status: Draft
+Type: Process
+Reference Implementation: https://www.mangofarmassets.com
+Created: 2019-06-13
+</pre>
+
+==Abstract==
+
+This RIP proposes a metadata specification for asset creation to complement [[rip-0011.mediawiki|RIP11 - Asset Metadata Encryption Protocol]] and to extend the [https://github.com/RavenProject/Ravencoin/blob/develop/assets/asset_metadata_spec.md Ravencoin Metadata Specification].
+
+This specification is drawn from and extends the concepts in the [https://github.com/RavenProject/Ravencoin/blob/develop/assets/asset_metadata_spec.md Ravencoin Metadata Specification], to facilitate:
+
+# attaching and/or linking multiple files to asset metadata;
+# encrypting attached files consistent with [[rip-0011.mediawiki|RIP11]]; 
+# categorizing of nested JSON data; and
+# versioning to allow explorers and wallets to adopt this and future metadata specifications with forward and backward compatability.
+
+==Motivation==
+
+A JSON specification for attaching/linking multiple files of various types, and encrypting those files, will expand the potential usefulness of asset metadata by allowing the attachment of multiple files and/or URIs and facilitating the encryption and decryption of metadata documents and files on a wallet- and platform-agnostic basis.
+
+==Methodology==
+
+The following extended JSON specification can be used as the basis for the IPFS hash when issuing Ravencoin assets to facilitate encryption and decryption of asset information:
+
+<pre>
+{
+	"rip0014": {
+		"metadata": {
+			"asset_data": {
+				"icon": "<base 64 encoded png (64x64 is recommended)>",
+				"name": "<full asset name>",
+				"description": "<asset description>",
+				"type": "<e.g., Title, Points, Shares, Tickets>",
+				"restrictions": "<e.g., Rule 144, Members Only>",
+				"keywords": "<Baseball Cards, Coins, Book Of The Month Club>"
+			},
+			"admin_data": {
+				"issuer": "<issuer>",
+				"website": "<website>",
+				"contact_name": "<contact name>",
+				"website_url": "<website>",
+				"contact_email": "<contact email>",
+				"address": "<physical address>"
+			},
+			"forsale_data": {
+				"sale_price": "<price for the admin token>",
+				"coin": "<3 letter ticker for currency, e.g., RVN, BTC, USD>"
+			},
+			"other_data": {
+				"<key1>": "<value>",
+				"<key2>": "<value>",
+				"<key3>": "<value>"
+			},
+			"encryption": {
+				"algorithm": "<e.g., AES, TripleSec>",
+				"attachments": [
+					"<IPFS hash encrypted attachment 1 created per. RIP11>",
+					"<IPFS hash for encrypted attachment 2 created per. RIP11>",
+					"<IPFS hash for encrypted attachment n created per. RIP11>"
+				],
+				"recipients": {
+					"<recipient 1 encryption address>": "<PGP encrypted symmetric key of recipient 1 per. RIP11>",
+					"<recipient 2 encryption address>": "<PGP encrypted symmetric key of recipient 2 per. RIP11>",
+					"<recipient n encryption address>": "<PGP encrypted symmetric key of recipient n per. RIP11>"
+				}
+			},
+			"ipfs_attachments": [
+					"<IPFS hash for unencrypted attachment 1>",
+					"<IPFS hash for unencrypted attachment 2>",
+					"<IPFS hash for unencrypted attachment n>"
+			],
+			"url_links": [
+					"<url link 1>",
+					"<url link 2>",
+					"<url link n>"
+			]
+		},
+		"metadata_signature": {
+			"signature_hash": "<SHA256 hash of the immediately preceding metadata JSON object {...}>",
+			"signature": "<Ravencoin signed signature_hash>"
+		}
+	}
+}
+</pre>
+
+===Supported Attributes===
+
+'''rip0014''' - Specifies the metadata version (in this case, RIP14).
+
+'''asset_data''' - Specifies the headline metadata for the asset, including the icon, full asset name, description, asset type, whether the asset has any restrictions and keywords to facilitate indexing and searching.
+
+'''admin_data''' - Specifies contact and other information about the issuer/owner of the administrator asset.
+
+'''forsale_data''' - Specifies whether the administrator asset is for sale, the price, and the currency.
+
+'''other_data''' - Specifies any additional data or information that is not covered by the other specific metadata categories.
+
+'''encryption''' - Indicates the encryption data (encryption algorithm, an array of encrypted attachments of any filetype, and recipient encryption addresses and ciphertext), for use when IPFS attachments have been encrypted under [[rip-0011.mediawiki|RIP11]].
+
+'''ipfs_attachments''' - An array of IPFS hashes included in the metadata file as attachments. These can be documents, images, media files or other filetypes. Multiple attachments can be included of different types.
+
+'''url_links''' - An array of links included in the metadata file.
+
+'''metadata_signature''' - Indicates signature information for the metadata. This allows for signing of all metadata associated with the asset, including any immutable ipfs_hash included in the metadata as described above.
+* "signature_hash" is the SHA256 hash in ascii hex of the immediately preceding JSON object - ''i.e.,'' all information between and including the  brackets after "metadata": {...}.
+
+* "signature" is the signature_hash signed with the private key of the address that issued or reissued the asset.
+
+==Implementation==
+
+The methodology outlined in this RIP has been automated on [https://www.mangofarmassets.com Mango Farm], providing a proof of concept for its use as a standardized process.
+
+==References==
+* [[rip-0011.mediawiki|RIP11 - Asset Metadata Encryption Protocol]].
+* [https://github.com/RavenProject/Ravencoin/blob/develop/assets/asset_metadata_spec.md Ravencoin Metadata Specification].

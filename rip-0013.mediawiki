@@ -1,0 +1,76 @@
+<pre>
+RIP: 13
+Title: Address Identity Tags
+Authors: The Mango Farm Team
+Comments-Summary: No comments yet
+Comments-URI: https://github.com/RavenProject/rips
+Status: Draft
+Type: Process
+Created: 2019-06-01
+</pre>
+
+==Abstract==
+
+This RIP proposes a system for users to link real world identity documentation to a Ravencoin addresses.  It is a specific application of [[rip-0010.mediawiki|RIP10 - Address Metadata Tags]].
+
+==Motivation==
+
+Address Identity Tags are unique assets that allow Ravencoin addresses to be associated with proof of the identify of the holders of the private keys for the addresses.  Users maintain control over who has access to their personal identifying information by selectively disclosing an an encryption key only to trusted recipients.  A standardized methodology for generating Address Identity Tags will allow this functionality to be used on a wallet-agnostic basis.
+
+While Address Identity Tags can be used for purposes including KYC/AML, it is not intended as a substitute for the more robust compliance functionality to be provided by [https://medium.com/@tronblack/ravencoin-restricted-asset-sec-compliance-how-to-1-fe507a6a4ae9 Tags and Restricted Assets].
+
+==Methodology==
+
+We propose the following methodology to build Address Identity Tags:
+
+===A. 	Creating Address Identity Tags===
+
+Users who want to prove that their "real world" identity is associated with a Ravencoin addresses can create an Address Identity Tag in the following manner:
+
+<ol>
+  <li>Generate a new Ravencoin address (or use an existing one).
+  <li>Encrypt an identification document, such as a high-resolution image of the front and back of the address owner's government-issued identification card, using a cryptographically secure symmetric key such as [https://keybase.io/triplesec/ TripleSec] or AES.
+  <li>Add the encrypted file to IPFS and obtain an IPFS hash.
+  <li>Create a JSON file with the following proof of identity:
+<pre> 
+{
+	"tag": {
+		"tag_type": "AIT",
+		"algorithm": "<algorithm used to encrypt the identity document from step 2>",
+		"ravencoin_address": "<Ravencoin address from step 1>",
+		"identity_document": "<IPFS hash of the encrypted identity document from step 3>"
+	},
+	"metadata_signature": {
+		"signature_hash": "<SHA256 hash of the immediately preceding metadata JSON object {...}>",
+		"signature": "<Ravencoin signed signature_hash>"
+	}
+}   
+</pre></li>
+  <li>Add the JSON file to IPFS and obtain an IPFS hash.
+  <li>Issue a unique asset and send it to the Ravencoin address, adding the IPFS hash from step 5 as the asset metadata and using the following naming convention (excluding the brackets): <code>MAIN_ASSET#AIT_[address_hash]</code></li>
+</ol>
+
+::: “MAIN_ASSET” can be any main asset name no more than 10 characters in length, for a total asset name length of up to 23 characters (the remaining 7 characters are reserved for Address Identity Tag reissuance under Section B below).  Users, wallet providers and other second layer solutions may choose to use a single main asset name for all Address Identity Tags they or their platforms generate.  This reduces the cost of generating each new Address Identity Tag to the 5 RVN burn fee.
+
+::: “AIT” appears as the first three letters after the unique asset tag # in the unique asset name.  This signifies that the unique asset carries an Address Identity Tag and facilitates protocol-level searching for Address Identity Tags.  
+
+::: “address_hash” is the CRC32 hash of the Ravencoin address.  Using this hash in the unique asset name acts as a checksum, allowing any sender to confirm that the Address Identity Tag matches the address that holds it.  For this purpose, the hash need not be cryptographically secure.  CRC32 was selected due to its simplicity and short length (8 characters).
+
+===B. 	Allowing Access To Proof of Identity===
+
+Once an Address Identity Tag is created, the address owner can send the encryption key to trusted recipients by PGP encrypting the shared symmetric key used to encrypt the identity document, using the PGP public key of each intended recipient. This public key can be obtained from the Encryption Address Tag associated with each recipient's encryption address as set forth in [[rip-0011.mediawiki|RIP11 - Asset Metadata Encryption Protocol]].  
+
+The PGP-encrypted cyphertext can be sent to the intended recipient by email or other means.  
+
+Alternatively, it can be added to the JSON for the Address Identity Tag according to the specifications in [[rip-0011.mediawiki|RIP11]].  Since unique assets cannot be reissued, a new Address Identity Tag must be issued by adding a random letter or number, which can be ignored by wallets, at the end of the asset name--''e.g.,'' <code>MAIN_ASSET#AIT_[address_hash]1</code></li>.  If this method is used, it is advisable to burn the original Address Identity Tag so that only one tag is associated with an address at any given time.
+
+Once the recipient has the PGP-encrypted cyphertext, the recipient can:
+
+# decrypt the cyphertext with the recipient's PGP private key;
+# use the symmetric key that is revealed, along with the encryption format from the Address Identity Tag, to decrypt the identity document; and
+# verify that the document signature was made by the holder of the private key for the Ravencoin address.
+
+==References==
+* [[rip-0010.mediawiki|RIP10 - Address Metadata Tags]].
+* [[rip-0011.mediawiki|RIP11 - Asset Metadata Encryption Protocol]].
+* [https://medium.com/@tronblack/ravencoin-restricted-asset-sec-compliance-how-to-1-fe507a6a4ae9 Tron Black, Tags and Restricted Assets (Feb. 21, 2019)].

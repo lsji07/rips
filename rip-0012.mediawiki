@@ -1,0 +1,65 @@
+<pre>
+RIP: 12
+Title: Address Name Tags
+Authors: The Mango Farm Team
+Comments-Summary: No comments yet
+Comments-URI: https://github.com/RavenProject/rips
+Status: Draft
+Type: Process
+Created: 2019-06-01
+</pre>
+
+==Abstract==
+
+This RIP proposes a system for naming Ravencoin addresses.  It is a specific application of [[rip-0010.mediawiki|RIP10 - Address Metadata Tags]].
+
+==Motivation==
+
+Address Name Tags are unique assets that allow Ravencoin addresses to be associated with "real world" names or pseudonyms. This is distinct from a wallet address book in that the association is stored by the address owner on the Ravencoin blockchain itself. A standardized methodology for generating Address Name Tags will allow this functionality to be used on a wallet-agnostic basis.
+
+==Methodology==
+
+We propose the following methodology to build Address Name Tags:
+
+===A. 	Create Address Name Tag (Recipient)===
+
+Users who want to name their Ravencoin addresses can create an Address Name Tag in the following manner:
+
+<ol>
+  <li>Generate a new Ravencoin address (or use an existing one).
+  <li>Create a JSON file with the following information to name the address:
+<pre> 
+{
+	"tag": {
+		"tag_type": "ANT",
+		"ravencoin_address": "<Ravencoin address from step 1>",
+		"address_name": "<name that you want to give to the Ravencoin address>",
+		"address_name_mime": "text/x-markdown; charset=UTF-8",
+		"icon": "<base64 encoded png image at 64x64>"
+	},
+	"metadata_signature": {
+			"signature_hash": "<SHA256 hash of the immediately preceding metadata JSON object {...}>",
+			"signature": "<Ravencoin signed signature_hash>"
+	}
+}
+</pre></li>
+  <li>Add the JSON file to IPFS and obtain an IPFS hash.
+  <li>Issue a unique asset and send it to the Ravencoin address, adding the IPFS hash from step 3 as the asset metadata and using the following naming convention (excluding the brackets): <code>MAIN_ASSET#ANT_[address_hash]</code></li>
+</ol>
+
+::: “MAIN_ASSET” can be any main asset name no more than 10 characters in length, for a total asset name length of up to 23 characters (the remaining 7 characters are reserved for potential future functionality).  Users, wallet providers and other second layer solutions may choose to use a single main asset name for all Address Name Tags they or their platforms generate.  This reduces the cost of generating each new Address Name Tag to the 5 RVN burn fee.
+
+::: “ANT” appears as the first three letters after the unique asset tag # in the unique asset name.  This signifies that the unique asset carries an Address Name Tag and facilitates protocol-level searching for Address Name Tags.  
+
+::: “address_hash” is the CRC32 hash of the Ravencoin address.  Using this hash in the unique asset name acts as a checksum, allowing any sender to confirm that the Address Name Tag matches the address that holds it.  For this purpose, the hash need not be cryptographically secure.  CRC32 was selected due to its simplicity and short length (8 characters).
+
+===B. 	Lookup Address Name Tag (Sender)===
+
+Once created, an Address Name Tag can be located by users or wallet providers and associated in an address book with a particular address.  Users can use "metadata_signature" to validate that the creator of the tag is the owner of the private key associated with the address.
+
+==Implementation==
+
+The methodology outlined in this RIP is intended to be automated on [https://www.mangofarmassets.com Mango Farm], providing a proof of concept for its use as a standardized process.
+
+==References==
+* [[rip-0010.mediawiki|RIP10 - Address Metadata Tags]].
