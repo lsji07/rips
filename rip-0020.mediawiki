@@ -57,7 +57,7 @@ That's the number that should be included after the 12-words.
 
 ==Implementation==
 
-This simple specification is intended to be implemented by wallets which use addresses derived using BIP32, BIP39, and BIP44, and in particular use a 12 or 24 mnemonic to back up the seed that generates the private keys and associated addresses. 
+This simple specification is intended to be implemented by wallets which use addresses derived using BIP32, BIP39, and BIP44, and in particular use a 12 or 24 word mnemonic to back up the seed that generates the private keys and associated addresses. 
 
 Take the number and multiply it by 604800 and add it to 1514962800, and start scanning blocks from there.
 
