@@ -41,18 +41,18 @@ FLOOR(167.936111111111111) = 167
 That's the number that should be included after the 12-words.
 
 ==Benefits==
-- The number is optional.  If the wallet doesn't support it, then the wallet scans from the beginning of the blockchain. 
-- The number is optional.  If the wallet does support it, and the user doesn't have it, then the wallet scans from the beginning of the blockchain. 
-- The number is small, and unlikely to be written down wrong.  Even ten years from now the number is: 689 
-- It will be a 3 digit number for another 15 years. 
-- It gets more valuable over time, potentially shaving off ten or twenty years of blockchain to scan. 
-- For someone restoring a recently created mobile wallet, this could save 18 hours of sync time -- every time it is restored. 
-- The Unix timestamp is based off of UTC, so it is the same around the world.  It does not factor in time zones. 
-- By lopping off the decimal, the wallet is starting on average 1/2 week before the first transaction.    
-- At-worst at the time of the transaction if the transaction was instantly put into a block and instantly mined.  Clocks may be off, but are rarely off by much, and since transactions take time to be mined the transaction will almost certainly take place after the calculated Unix timestamp. 
-- If, in the extreme case of the timestamp in the block being off (late) indicating to the wallet that it does not need to scan earlier, and the transaction was missed, then decrementing the number by 1 will solve it.  This is an extreme case, and unlikely to ever happen. 
-- If you want to know when you created the wallet, you can use this: 
-- 1514962800 + (604800 * number),  and paste it in here: https://www.epochconverter.com/. That'll get you within a week of when you created your wallet. 
+* The number is optional.  If the wallet doesn't support it, then the wallet scans from the beginning of the blockchain. 
+* The number is optional.  If the wallet does support it, and the user doesn't have it, then the wallet scans from the beginning of the blockchain. 
+* The number is small, and unlikely to be written down wrong.  Even ten years from now the number is: 689 
+* It will be a 3 digit number for another 15 years. 
+* It gets more valuable over time, potentially shaving off ten or twenty years of blockchain to scan. 
+* For someone restoring a recently created mobile wallet, this could save 18 hours of sync time -- every time it is restored. 
+* The Unix timestamp is based off of UTC, so it is the same around the world.  It does not factor in time zones. 
+* By lopping off the decimal, the wallet is starting on average 1/2 week before the first transaction.    
+* At-worst at the time of the transaction if the transaction was instantly put into a block and instantly mined.  Clocks may be off, but are rarely off by much, and since transactions take time to be mined the transaction will almost certainly take place after the calculated Unix timestamp. 
+* If, in the extreme case of the timestamp in the block being off (late) indicating to the wallet that it does not need to scan earlier, and the transaction was missed, then decrementing the number by 1 will solve it.  This is an extreme case, and unlikely to ever happen. 
+* If you want to know when you created the wallet, you can use this: 
+* 1514962800 + (604800 * number),  and paste it in here: https://www.epochconverter.com/. That'll get you within a week of when you created your wallet. 
 
 
 ==Implementation==
