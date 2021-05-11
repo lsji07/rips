@@ -1,0 +1,80 @@
+<pre>
+RIP: 15
+Title: User-Friendly Atomic Swap Process
+Author: Ben Abraham
+Comments-Summary: No comments yet
+Comments-URI: https://github.com/RavenProject/rips
+Status: Draft
+Type: Process
+Created: 2021-05-11
+</pre>
+
+==Abstract==
+
+This RIP proposes a user-friendly methodology for performing on-chain atomic swaps in a user-friendly and verifiable manner. Allowing users to announce their desire to purchase or sell an asset for a predefined amount, and allowing A counterparty to complete that transaction.
+
+==Motivation==
+
+With the ever-growing population of content creators on the ravencoin network, and ethereum fees at an all-time high, it's imperative to be able to provide the community with a fast, trusted, well-integrated means of asset trading, where both parties can recieve their output in a single transaction.
+
+This effectively creates one-time-use publishable buy/sell orders for assets.
+
+==Methodology==
+
+*Bob has 500RVN in his wallet. (known as bobInputUTXOs)
+*Alice has 1xNFT asset in her wallet. (known as aliceInputUTXOs)
+*Bob wants to purchase alice's NFT for a price that he determines
+
+===Full Buy Order Sequence===
+# Bob generates asset receipt address bobAssetAddr
+# Bob generates change receipt address if needed bobChangeAddr
+# Bob creates a transaction with the following vin/vouts
+## vin: 500x RVN from bobInputUTXOs
+## vout: 1xNFT to bobAssetAddr
+## vout: [optional] change to bobChangeAddr
+# Bob signs the incomplete transaction with SIGHASH_SINGLE | SIGHASH_ANYONECANPAY
+# Bob announces to alice, via a side-channel (discord, trading site, etc.,) his trade offer.
+# Alice generates RVN receipt address aliceRVNAddr
+# Alice generates asset change address if needed aliceAssetChangeAddr
+# Alice adds the following vin/vouts to the transaction
+## vin: 1xNFT from aliceInputUTXOs
+## vout: 500x RVN to aliceRVNAddr
+## vout: [optional] asset change to aliceAssetChangeAddr
+# Alice signs the transaction to completion and publishes it
+# Swap completed upon verification
+
+This proposal suggests combining steps 1-4, as well as 6-10 into a single user-interface step each for both bob and alice. Allowing for 2-step swaps to take place seamleslly with the ravencoin client.
+
+
+==Benefits==
+* Trustless, immediate asset trades would offer huge ability to content creators, allowing them to independently distribute their works withouht fear of a third party interfereing.
+* Many ways this can be well-integrated into the client, making it very easy to make swaps.
+* Simple basic instant transactions, no complex time-locking
+* Partially signed transactions could be cleanly interpreted and displayed to the user, for easy understanding
+* Greatly reduced effort when buying from a marketplace website, and no trust risk.
+
+==Potential Issues/Unanswered Questions==
+* Because you have to compile a list of UTXOs to broadcast in your request, those UTXOs might end up spent by the time the swap is attempted to be fulfilled.
+* This affects both assets and RVN, but is more likely to happen with RVN. Is there any problem with assigning UTXOs in the opposite order that spending usually spend in (IIRC: spending goes older-to-newest)
+* Pre-creating a large number of individual Buy/Sell orders would be cumbersome as you could only pre-create each order against a single utxo effectively. This would encourage UTXO bloat for people who want to subdivide large pools of assets and sell small chunks or even individual/partial units.
+
+
+==Implementation==
+
+From a UX point-of-view, ideally the process would look something like this:
+# Bob builds a Buy Order in the UI specifying the quantity, cost, and payer of fees.
+# This 'Buy Order' is constructed into a transaction, partially signed, and presented to bob. (Raw, QR, etc.)
+# Bob either hands the signed tx directly to Alice, or he can simply publicly broadcast it and allow Alice to find it herself.
+# Alice recieves the part-signed tx, the software decodes it and displays a simple explanation of what the swap looks like. (ie: 500RVN for 1xNFT)
+# Alice approves the swap, finalizing the transaction and publishing it.
+
+There are many additional ways you could expand this functionality above-and-beyone the above behaviour. Some quick suggestions that come to mind:
+* Notification to both parties upon completion
+* Swaps could be published in-client in some manner, allowing for a seamless market within the client.
+* A seperate swaps section in the UI just for creating and monitoring previously created swaps.
+* Assets marketplace websites could easily generate Sell Orders that users could very easily purchase in a single click with the use of protocol urls.
+
+==References==
+* [https://raghavsood.com/blog/2018/06/10/bitcoin-signature-types-sighash Signature Hash Types].
+* [https://groups.google.com/g/bitcoinx/c/pON4XCIBeV4/m/IvzwkU8Vch0J?pli=1 Bitcoin colored coin atomic swaps].
+* [https://github.com/RavenProject/Ravencoin/issues/423 Request for implementation].
