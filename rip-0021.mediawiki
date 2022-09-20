@@ -149,8 +149,7 @@ Melt => ''meltasset "asset_name" assetqty "from_address" "to_address" fee_amount
 **"from_address" (string, required), address from which Vault assets will be removed and inactivated
 **"to_address" (string, required), address where extracted "face value" RVN will be put
 **"fee_amount" (numeric, required) the number of ravencoins to be paid in fees for this transaction
-**"fee_address"
-(string, required), address from which the ravencoin fee will be taken
+**"fee_address" (string, required), address from which the ravencoin fee will be taken
 **"change_address" (string, optional, default=""), address the Ravencoin change from the fee will be sent to. If it is empty, a change address will be generated for you
 **"has_ipfs" (boolean, optional, default=false), whether ifps hash is going to be added to the asset
 **"ipfs_hash"	(string, optional but required if has_ipfs = 1), an ipfs hash or a txid hash once RIP5 is activated
@@ -192,8 +191,7 @@ If RF>0 the fund_address must contain sufficient RVN currency equal to the curre
 **rvnqty (numeric, required) the number of RVN to be put into escrow RF for this assetname
 **"fund_address" (string, required if RF>0), address from which the rvnqty will be taken and locked in the escrow for this asset name
 **"to_address" (string, required), address asset will be sent to
-**"remint_burnfee_address" (string, required), the address from which the RVN burn fee will be taken to pay for the remintasset operation
-fee_amount (numeric, required) the number of ravencoins to be paid in fees for this transaction
+**"remint_burnfee_address" (string, required), the address from which the RVN burn fee will be taken to pay for the remintasset operation fee_amount (numeric, required) the number of ravencoins to be paid in fees for this transaction
 **"fee_address" (string, required), address from which the ravencoin fee will be taken
 **"to_address" (string, required), address asset will be sent to
 **"change_address" (string, optional, default=""), address the Ravencoin change from the fee will be sent to. If it is empty, a change address will be generated for you
